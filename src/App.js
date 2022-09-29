@@ -15,9 +15,7 @@ function App() {
   const [verifyContract , setVerifyContract] = useState('') 
   const [provider , setProvider] = useState('') 
   const [address , setAddress] = useState('')  
-
-
-   const [searchParams] = useSearchParams();  
+  const [searchParams] = useSearchParams();  
 
   // console.log(searchParams.get('uuid'))
  
@@ -36,14 +34,7 @@ function App() {
       // console.log(address)
       
     } 
-
-    
-
   } , []) 
-
- 
-   
-
 
   const add  = async () => { 
 
@@ -75,17 +66,40 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <input onChange={e => setInput(e.target.value)} placeholder ="Tweet Id" ></input>
-      
-      <button className='button-27' onClick={add}>Submit Verification</button> 
+    <div className=' vh-100 d-flex justify-content-center align-items-center'>
+    <div className="w-75 px-3">
+      <div className='row mb-3'>
+        <div className='col-lg-12'>
+          <h1 className='text-center fw-semibold'>
+            Rain Game Verification
+          </h1>
+        </div>
+      </div> 
+        <div class="input-group mb-5 me-5 px-5">
+          <input type="text" class="form-control" onChange={e => setInput(e.target.value)} placeholder ="Tweet URL" ></input>
+          <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit Verification</button> 
+        </div>
 
-      <a href='https://twitter.com/intent/tweet?text=Requesting%20verifcation%20of%20address%200x0000000000000000000000000000000000000000%20for%20%40rainprotocol.%20Check%20put%20Rain%20Rrotocol%20at%20https%3A%2F%2Fdocs.rainprotocol.xyz%2F%20%23rainprotocol%20%23nft'><button className='button-27' >Tweet Address</button></a> 
-
-      {/* <p>uuid : {searchParams.get('uuid')}</p> */}
+      <div className='row mb-3'>
+        <div className='col-lg-12'>
+          <h3 className='text-left fw-semibold'>
+            How does this work?
+          </h3>
+        </div>
+        <div className=' d-flex align-items-center'>
+            <img src='assets/images/twitter.png' width='32' height='32' alt='twitter' className='me-4' />
+            <p>
+            Verify via Twitter, make a <a target='_blank' href='https://twitter.com/intent/tweet?text=Requesting%20verifcation%20of%20address%200x0000000000000000000000000000000000000000%20for%20%40rainprotocol.%20Check%20put%20Rain%20Rrotocol%20at%20https%3A%2F%2Fdocs.rainprotocol.xyz%2F%20%23rainprotocol%20%23nft'>tweet</a> with your Ethereum address pasted into the contents (surrounding text doesn't matter).<br />
+  Copy-paste the tweets URL into the above input box and fire away!
+            </p>
+        </div>
+      </div>
       
+    </div>
     </div>
   );
 }
 
 export default App;
+
+

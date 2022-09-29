@@ -1,4 +1,3 @@
-
 import './App.css'; 
 import {Verify} from "rain-sdk" 
 import { useEffect,useState } from 'react';
@@ -72,14 +71,35 @@ function App() {
   }
 
   return (
-    <div className="App">
-    
-      
-      <button className='button-27' onClick={add}>Submit Verification</button> 
+    <div className=' vh-100 d-flex justify-content-center align-items-center'>
+    <div className="w-75 px-3">
+      <div className='row mb-3'>
+        <div className='col-lg-12'>
+          <h1 className='text-center fw-semibold'>
+            Rain Game Verification
+          </h1>
+        </div>
+      </div> 
+        <div class="text-center mb-5">
+          <button className='btn btn-secondary' onClick={add}>Submit Verification</button> 
+        </div>
 
-      {/* <p>uuid : {searchParams.get('uuid')}</p> */}
+      <div className='row mb-3'>
+        <div className='col-lg-12'>
+          <h3 className='fw-semibold'>
+            How does this work?
+          </h3>
+        </div>
+        <ol class="list-group list-group-numbered text-left">
+          <li class="list-group-item border-0">A list item</li>
+          <li class="list-group-item border-0">A list item</li>
+          <li class="list-group-item border-0">A list item</li>
+        </ol>
+      </div>
       
     </div>
+    </div>
+  
   );
 }
 
