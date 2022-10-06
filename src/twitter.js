@@ -16,9 +16,6 @@ function App() {
   const [provider , setProvider] = useState('') 
   const [address , setAddress] = useState('')  
   const [searchParams] = useSearchParams();  
-  const [claim , setClaim] = useState(); 
-  const [flag , setFlag] = useState(false); 
-
 
   // console.log(searchParams.get('uuid'))
  
@@ -40,7 +37,31 @@ function App() {
   } , []) 
 
   const add  = async () => { 
-    setFlag(true)
+
+    console.log('input : ' , input) 
+    let id = input.split('/').pop() 
+    console.log(id) 
+
+    let role = await verifyContract.state(await provider.getSigner().getAddress())
+    console.log(role)
+    var enc = new TextEncoder() 
+    let bytes = enc.encode(id) 
+
+    let tx = await verifyContract.add(bytes , {
+              gasPrice : ethers.utils.parseUnits('350', 'gwei'),
+              gasLimit :  '200000'
+          }) 
+
+    let reuslt = await tx.wait()
+     console.log(reuslt )  
+
+     let verifyReq = await axios.post('http://localhost:5000/api/v2/verify-twitter' , {
+      hash :  reuslt.transactionHash
+     }) 
+
+     if(verifyReq.data.status){
+      alert("Address verified ")
+     }
 
   }
 
@@ -51,22 +72,14 @@ function App() {
         <div className='col-lg-12'>
           <h1 className='text-center fw-semibold'>
             <img src='assets/images/twitter.png' width='40' height='40' alt='twitter' className='me-4' />
-            Rain Game Claim Tokens
+            Rain Game Verification
           </h1>
         </div>
       </div> 
-        <div className="input-group mb-5 me-5 px-5">
+        <div class="input-group mb-5 me-5 px-5">
           <input type="text" class="form-control" onChange={e => setInput(e.target.value)} placeholder ="Tweet URL" ></input>
-          <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit</button> 
+          <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit Verification</button> 
         </div>
-        {
-          flag && (
-            <div className="input-group mb-5 me-5 px-5">
-              <span>Text here </span>
-               <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit</button> 
-            </div>
-          )
-        }
 
       <div className='row mb-3'>
         <div className='col-lg-12'>
