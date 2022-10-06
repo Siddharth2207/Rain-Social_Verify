@@ -61,9 +61,9 @@ function App() {
         </div>
         {
           flag && (
-            <div className="input-group mb-5 me-5 px-5">
-              <span>Text here </span>
-               <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit</button> 
+            <div className="mb-5 me-5 px-5">
+              <div className="mb-3">Mintable amount will be 0.0 MyTKN</div>
+              <button className='btn btn-secondary' onClick={add}>Claim</button>
             </div>
           )
         }
