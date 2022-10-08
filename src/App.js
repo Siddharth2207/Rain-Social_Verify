@@ -1,6 +1,6 @@
 
 import './App.css'; 
-import {Verify} from "rain-sdk" 
+import {EmissionsERC20} from "rain-sdk" 
 import { useEffect,useState } from 'react';
 import { ethers } from 'ethers';  
 import axios from "axios" 
@@ -16,7 +16,7 @@ function App() {
   const [provider , setProvider] = useState('') 
   const [address , setAddress] = useState('')  
   const [searchParams] = useSearchParams();  
-  const [claim , setClaim] = useState(); 
+  const [claim , setClaim] = useState('0'); 
   const [flag , setFlag] = useState(false); 
 
 
@@ -31,18 +31,75 @@ function App() {
       let providerObject  = new ethers.providers.Web3Provider(window.ethereum)  
       setProvider(providerObject) 
       let signer = providerObject.getSigner()
-      let verifyContractObject = new Verify('0x59144e51afb64f3889a404f19caf632c83bb6105', signer)  
+      let verifyContractObject = new EmissionsERC20('0x8fbf820107b88a54714ebe6debc26547ce31d914', signer)  
       setVerifyContract(verifyContractObject) 
       // let address = await signer.getAddress() 
       // console.log(address)
       
     } 
-  } , []) 
+  } , [])  
 
-  const add  = async () => { 
-    setFlag(true)
+  const test = async () => { 
+
+    let address = await provider.getSigner().getAddress()  
+    let res = await verifyContract.balanceOf(address) 
+    console.log(res.toString())
 
   }
+
+  const register  = async () => {   
+
+    console.log('input : ' , input) 
+    let id = input.split('/').pop() 
+    console.log(id)  
+
+
+    let verifyReq = await axios.post('http://localhost:5000/api/v2/registerChessId' , {
+      tweetId :  id
+     })  
+    setClaim(verifyReq.data.data.gameTokens)
+    setFlag(true)
+
+  }  
+
+  const verifyGame  = async () => {   
+    
+    let address = await provider.getSigner().getAddress()  
+
+    console.log('input : ' , input) 
+    let id = input.split('/').pop() 
+    console.log(id)  
+
+
+    let verifyReq = await axios.post('http://localhost:5000/api/v2/chessGame' , {
+      tweetId :  id ,
+      address : address.toLowerCase()
+     })   
+
+    setClaim(verifyReq.data.data.gameTokens)
+    setFlag(true)
+
+  } 
+
+  const claimCall  = async () => {   
+      let address = await provider.getSigner().getAddress() 
+      console.log(address)
+
+      let tx = await verifyContract.claim( address ,ethers.constants.AddressZero , {
+        gasPrice : ethers.utils.parseUnits('350', 'gwei'),
+        gasLimit :  '200000'
+    })  
+
+    let reuslt = await tx.wait()
+    console.log(reuslt )  
+    
+
+    setClaim('0')
+    setInput('')
+    setFlag(false)
+
+  }
+
 
   return (
     <div className=' vh-100 d-flex justify-content-center align-items-center'>
@@ -54,19 +111,30 @@ function App() {
             Rain Game Claim Tokens
           </h1>
         </div>
-      </div> 
+      </div>  
+
+     
+
         <div className="input-group mb-5 me-5 px-5">
-          <input type="text" class="form-control" onChange={e => setInput(e.target.value)} placeholder ="Tweet URL" ></input>
-          <button className='btn btn-secondary' onClick={add} disabled={!input}>Submit</button> 
+          <input type="text" class="form-control" onChange={e => setInput(e.target.value)} placeholder ="Tweet URL" ></input> 
+          <select value="Register">
+            <option value="Register">Register</option>
+            <option value="Verify Game">Verify Game</option>
+          </select>
+          <button className='btn btn-secondary' onClick={register} disabled={!input}>Register</button>  
+          <button className='btn btn-secondary' onClick={verifyGame} disabled={!input}>Verify Game</button> 
+          <button className='btn btn-secondary' onClick={test} disabled={!input}>Test</button> 
         </div>
         {
           flag && (
             <div className="mb-5 me-5 px-5">
-              <div className="mb-3">Mintable amount will be 0.0 MyTKN</div>
-              <button className='btn btn-secondary' onClick={add}>Claim</button>
+              <div className="mb-3">Claimable Amount : {claim} MyTKN</div>
+              <button className='btn btn-secondary' onClick={claimCall}>Claim</button>
             </div>
           )
-        }
+        } 
+
+        
 
       <div className='row mb-3'>
         <div className='col-lg-12'>
